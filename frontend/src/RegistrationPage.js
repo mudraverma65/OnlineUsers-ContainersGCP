@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db } from './firebaseConfig';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function RegistrationForm() {
@@ -9,25 +9,25 @@ function RegistrationForm() {
   const [location, setLocation] = useState('');
   const [registrationStatus, setRegistrationStatus] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Store the registration data in Firestore
-    db.collection('Reg')
-      .add({
-        name,
-        email,
-        password,
-        location,
-      })
-      .then(() => {
-        // Registration successful
-        setRegistrationStatus('success');
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error registering user:', error);
-      });
+    const registrationData = {
+      name,
+      password,
+      email,
+      location
+    };
+
+    try {
+      // Make POST request to the backend microservice
+      const response = await axios.post('http://127.0.0.1:5000/register', registrationData);
+      console.log(response.data); // Registration success message or response from the backend
+      setRegistrationStatus('success')
+    } catch (error) {
+      console.error(error);
+      // Handle error response from the backend
+    }
   };
 
   return (
