@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,12 +18,14 @@ function LoginForm() {
     };
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/login', loginData);
+      // const response = await axios.post('http://127.0.0.1:5000/login', loginData);
+      const response = await axios.post('https://a2-container2-fb74xf24fq-uc.a.run.app/login', loginData);
       console.log(response.data); 
       if (response.data.message === 'Login successful') {
         // Perform further actions, such as setting user session or redirecting to a dashboard
         // For example, set user session and redirect to the dashboard
         setLoginStatus('success');
+        navigate(`/profile/${email}`);
         // history.push('/dashboard');
       }
     } catch (error) {
@@ -62,7 +65,7 @@ function LoginForm() {
 
       {loginStatus && (
         <div className="alert alert-success mt-3" role="alert">
-          Login successful!
+          Login successful! <Link to={`/profile/${email}`}>Go to Profile</Link>
         </div>
       )}
     </form>

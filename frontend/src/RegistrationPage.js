@@ -8,6 +8,8 @@ function RegistrationForm() {
   const [password, setPassword] = useState('');
   const [location, setLocation] = useState('');
   const [registrationStatus, setRegistrationStatus] = useState(null);
+  const [registrationResponse, setRegistrationResponse] = useState(null);
+  const [registrationError, setRegistrationError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,21 +23,35 @@ function RegistrationForm() {
 
     try {
       // Make POST request to the backend microservice
-      const response = await axios.post('http://127.0.0.1:5000/register', registrationData);
-      console.log(response.data); // Registration success message or response from the backend
-      setRegistrationStatus('success')
+      // const response = await axios.post('http://127.0.0.1:5000/register', registrationData);
+      const response = await axios.post('https://a2-container1-fb74xf24fq-uc.a.run.app/register', registrationData);
+      console.log(response.data); // Response from the backend
+      if (response.data.message) {
+        setRegistrationStatus('success');
+        setRegistrationResponse(response.data.message); // Set the success message to be displayed
+        setRegistrationError(null); // Clear any previous error
+      } else {
+        setRegistrationStatus('error');
+        setRegistrationError(response.data.error); // Set the error message to be displayed
+        setRegistrationResponse(null); // Clear any previous success message
+      }
     } catch (error) {
       console.error(error);
-      // Handle error response from the backend
+      setRegistrationError(error.response.data.error); // Set the error message to be displayed
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="container mt-5">
       <h3>Registration</h3>
-      {registrationStatus === 'success' && (
+      {registrationStatus === 'success' && registrationResponse && (
         <div className="alert alert-success" role="alert">
-          Registration successful!
+          {registrationResponse}
+        </div>
+      )}
+      {registrationStatus === 'error' && registrationError && (
+        <div className="alert alert-danger" role="alert">
+          {registrationError}
         </div>
       )}
       <div className="mb-3">
