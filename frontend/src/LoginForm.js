@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -18,20 +21,19 @@ function LoginForm() {
     };
 
     try {
-      // const response = await axios.post('http://127.0.0.1:5000/login', loginData);
       const response = await axios.post('https://a2-container2-fb74xf24fq-uc.a.run.app/login', loginData);
       console.log(response.data); 
       if (response.data.message === 'Login successful') {
-        // Perform further actions, such as setting user session or redirecting to a dashboard
-        // For example, set user session and redirect to the dashboard
         setLoginStatus('success');
         navigate(`/profile/${email}`);
-        // history.push('/dashboard');
       }
     } catch (error) {
       console.error(error);
-      // Handle error response from the backend
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -53,19 +55,28 @@ function LoginForm() {
         <label htmlFor="password" className="form-label">
           Password:
         </label>
-        <input
-          type="password"
-          className="form-control"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="input-group">
+          <input
+            type={passwordVisible ? 'text' : 'password'}
+            className="form-control"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={togglePasswordVisibility}
+          >
+            <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+          </button>
+        </div>
       </div>
       <button type="submit" className="btn btn-primary">Login</button>
 
       {loginStatus && (
         <div className="alert alert-success mt-3" role="alert">
-          Login successful! <Link to={`/profile/${email}`}>Go to Profile</Link>
+          Login successful!
         </div>
       )}
     </form>

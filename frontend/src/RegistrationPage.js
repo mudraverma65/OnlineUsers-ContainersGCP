@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function RegistrationForm() {
@@ -10,6 +12,7 @@ function RegistrationForm() {
   const [registrationStatus, setRegistrationStatus] = useState(null);
   const [registrationResponse, setRegistrationResponse] = useState(null);
   const [registrationError, setRegistrationError] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,8 +25,6 @@ function RegistrationForm() {
     };
 
     try {
-      // Make POST request to the backend microservice
-      // const response = await axios.post('http://127.0.0.1:5000/register', registrationData);
       const response = await axios.post('https://a2-container1-fb74xf24fq-uc.a.run.app/register', registrationData);
       console.log(response.data); // Response from the backend
       if (response.data.message) {
@@ -39,6 +40,10 @@ function RegistrationForm() {
       console.error(error);
       setRegistrationError(error.response.data.error); // Set the error message to be displayed
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -82,13 +87,22 @@ function RegistrationForm() {
         <label htmlFor="password" className="form-label">
           Password:
         </label>
-        <input
-          type="password"
-          className="form-control"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="input-group">
+          <input
+            type={passwordVisible ? 'text' : 'password'}
+            className="form-control"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={togglePasswordVisibility}
+          >
+            <FontAwesomeIcon icon={passwordVisible ? faEyeSlash : faEye} />
+          </button>
+        </div>
       </div>
       <div className="mb-3">
         <label htmlFor="location" className="form-label">
@@ -102,7 +116,6 @@ function RegistrationForm() {
           onChange={(e) => setLocation(e.target.value)}
         />
       </div>
-      {/* Rest of the form inputs */}
       <button type="submit" className="btn btn-primary">Register</button>
     </form>
   );

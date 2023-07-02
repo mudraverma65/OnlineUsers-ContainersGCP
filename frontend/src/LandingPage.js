@@ -8,7 +8,7 @@ function Home() {
       <h1>Welcome to the Home Page</h1>
       <div className="mt-4">
         <Link to="/login" className="btn btn-primary me-3">Login</Link>
-        <Link to="/register" className="btn btn-primary">Registration</Link>
+        <Link to="/register" className="btn btn-primary">Register</Link>
       </div>
     </div>
   );
