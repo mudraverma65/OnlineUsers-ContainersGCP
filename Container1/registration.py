@@ -15,8 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Initialize Firebase
-# cred = credentials.Certificate(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
-cred = credentials.Certificate(r"C:\b00932103_csci5410_a2\Container1\serviceAccountKey.json")
+cred = credentials.Certificate(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://b00932103-csci5410-default-rtdb.firebaseio.com/'
 })
