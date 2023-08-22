@@ -1,3 +1,9 @@
+"""
+REFERENCES:
+1. https://console.firebase.google.com/
+2. https://www.youtube.com/watch?v=mNMv3WNgp0c
+"""
+
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -19,17 +25,23 @@ db = firestore.client()
 
 @app.route('/profile', methods=['GET'])
 def get_online_users():
-    # Get the state documents where online is true
-    query = db.collection('state').where('online', '==', True)
-    snapshot = query.get()
+    try:
+        # Get the state documents where online is true
+        query = db.collection('state').where('online', '==', True)
+        snapshot = query.get()
 
-    onlineusers = []
-    for doc in snapshot:
-        user_data = doc.to_dict()
-        onlineusers.append(user_data['email'])
+        online_users = []
+        for doc in snapshot:
+            user_data = doc.to_dict()
+            online_users.append(user_data['email'])
 
-    # Return the email IDs as JSON response
-    return jsonify({'onlineusers': onlineusers})
+        # Return the email IDs as JSON response
+        return jsonify({'online_users': online_users})
+
+    except Exception as e:
+        # Handle any unexpected errors and return an error response
+        return {'error': str(e)}, 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
